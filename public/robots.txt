@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://petronect-consultoria.netlify.app/sitemap-index.xml
