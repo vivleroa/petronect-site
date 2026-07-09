@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import { getOportunidades } from '../lib/petronect.js';
+const { rows, total, fecha, cont, ok } = await getOportunidades();
+const DB = { rows, cont };
+const title = 'Licitações da Petrobras abertas agora | Oportunidades no Petronect';
+const description = `Lista atualizada das ${total || ''} licitações abertas da Petrobras no Petronect: objeto, setor, prazo e abrangência. Filtre por setor e busque por palavra-chave.`;
+---
+<Base title={title} description={description} path="oportunidades/">
+  <section class="head">
+    <div class="wrap">
+      <div class="eyebrow">Dados ao vivo do Petronect</div>
+      <h1>Licitações da Petrobras abertas agora</h1>
+      <p class="lede">{ok ? `${total} oportunidades abertas · ${fecha} fecham em até 3 dias.` : 'Não foi possível carregar a lista neste momento — tente recarregar.'} Ver ≠ participar: para enviar proposta é preciso Taxa de Acesso + CRCC.</p>
+      <a href="/#contato" class="btn">Quero ajuda para participar →</a>
+    </div>
+  </section>
+
+  <section class="wrap board">
+    <div class="controls">
+      <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A9086" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="Buscar por objeto ou número…" /></label>
+      <select id="sort"><option value="asc">Mais urgente</option><option value="desc">Mais folgado</option></select>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="status">Mostrando <b id="shown">0</b> de <b id="tot">0</b> <span id="fl"></span></div>
+    <div class="tscroll"><table><thead><tr><th>Número</th><th>Objeto</th><th>Encerra</th><th>Prazo</th></tr></thead><tbody id="body"></tbody></table></div>
+  </section>
+
+  <script define:vars={{ DB }}>
+    const st = { q:'', setor:'', dir:1 };
+    const esc = s => (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const fmt = f => { if(!f) return '—'; const p=f.split('-'); return p[2]+'/'+p[1]; };
+    const pill = d => { const l=d<=0?'hoje':d+(d===1?' dia':' dias'); const c=d<=2?'crit':d<=7?'warn':'ok'; return '<span class="pill '+c+'">'+l+'</span>'; };
+    const chips = document.getElementById('chips');
+    function buildChips(){ chips.innerHTML='';
+      const all=document.createElement('button'); all.className='chip'+(st.setor===''?' active':''); all.innerHTML='Todos <span class="c">'+DB.rows.length+'</span>'; all.onclick=()=>{st.setor='';render();}; chips.appendChild(all);
+      DB.cont.forEach(x=>{ const b=document.createElement('button'); b.className='chip'+(st.setor===x.s?' active':''); b.innerHTML=esc(x.s)+' <span class="c">'+x.c+'</span>'; b.onclick=()=>{st.setor=st.setor===x.s?'':x.s;render();}; chips.appendChild(b); });
+    }
+    function render(){ buildChips();
+      const q=st.q.trim().toLowerCase();
+      let r=DB.rows.filter(x=>{ if(st.setor&&x.s!==st.setor)return false; if(q&&!((x.o||'').toLowerCase().includes(q)||x.n.includes(q)))return false; return true; });
+      r=r.slice().sort((a,b)=>(a.d-b.d)*st.dir);
+      document.getElementById('body').innerHTML=r.map(x=>{
+        const flag=x.a==='Int'?' · <b style="color:#B57F00">INT</b>':''; const reg=x.r?' · '+esc(x.r):'';
+        return '<tr><td class="code mono">'+esc(x.n)+'</td><td class="obj">'+esc(x.o)+'<div class="meta">'+esc(x.s)+reg+flag+'</div></td><td class="mono">'+fmt(x.f)+'</td><td>'+pill(x.d)+'</td></tr>';
+      }).join('');
+      document.getElementById('shown').textContent=r.length; document.getElementById('tot').textContent=DB.rows.length;
+      document.getElementById('fl').textContent=st.setor?'· '+st.setor:'';
+    }
+    document.getElementById('q').addEventListener('input',e=>{st.q=e.target.value;render();});
+    document.getElementById('sort').addEventListener('change',e=>{st.dir=e.target.value==='asc'?1:-1;render();});
+    render();
+  </script>
+
+  <style>
+    .head{background:radial-gradient(120% 90% at 12% 8%,#0F2A23 0%,#0B1F1A 62%);color:#EAF2EE;padding:56px 0 46px;}
+    .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#12A183;font-weight:700;}
+    .head h1{font-size:clamp(28px,4.6vw,44px);font-weight:800;margin:14px 0 12px;}
+    .head .lede{color:#9DB3AA;max-width:62ch;font-size:16px;margin-bottom:22px;}
+    .board{padding:34px 24px 10px;}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+    .search{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #DDD7C9;border-radius:10px;padding:0 12px;}
+    .search input{border:0;outline:0;background:transparent;font-size:14px;padding:12px 0;width:100%;font-family:inherit;}
+    select{background:#fff;border:1px solid #DDD7C9;border-radius:10px;padding:11px 14px;font-size:13px;font-family:inherit;cursor:pointer;}
+    .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
+    .chip{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid #DDD7C9;background:#fff;color:#5E6F67;cursor:pointer;}
+    .chip.active{background:#12A183;border-color:#12A183;color:#fff;}
+    .chip .c{opacity:.7;font-size:11px;}
+    .status{font-size:13px;color:#5E6F67;margin:4px 2px 12px;}
+    .status b{color:#14231D;}
+    .tscroll{overflow-x:auto;border:1px solid #E4DECF;border-radius:12px;background:#fff;}
+    table{border-collapse:collapse;width:100%;min-width:720px;}
+    th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#8A9086;font-weight:700;padding:12px 14px;border-bottom:1px solid #E4DECF;}
+    td{padding:11px 14px;border-bottom:1px solid #EFEADD;font-size:13px;vertical-align:top;}
+    tr:last-child td{border-bottom:none;}
+    td.code{color:#12A183;font-weight:700;white-space:nowrap;}
+    td.obj .meta{color:#8A9086;font-size:11px;margin-top:2px;}
+    .pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;color:#fff;}
+    .pill.crit{background:#B23A22;}.pill.warn{background:#9C6C12;}.pill.ok{background:#2E8B6F;}
+  </style>
+</Base>
