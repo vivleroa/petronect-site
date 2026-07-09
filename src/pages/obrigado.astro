@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Recebido! | Consultoria Licitações Petrobras" description="Seu pedido de diagnóstico foi recebido." path="obrigado/">
+  <section class="ty">
+    <div class="wrap">
+      <div class="check">✓</div>
+      <h1>Recebido! Vou te responder em breve.</h1>
+      <p>Obrigado pelo interesse. Em pouco tempo entro em contato com o próximo passo para a sua empresa começar a vender para a Petrobras.</p>
+      <div class="links">
+        <a href="/oportunidades/" class="btn">Ver oportunidades abertas</a>
+        <a href="/blog/" class="ghost">Ler o blog enquanto isso →</a>
+      </div>
+    </div>
+  </section>
+  <style>
+    .ty{background:radial-gradient(120% 90% at 12% 8%,#0F2A23 0%,#0B1F1A 62%);color:#EAF2EE;padding:90px 0;text-align:center;min-height:60vh;}
+    .check{width:72px;height:72px;border-radius:50%;background:#12A183;color:#04120E;font-size:38px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+    .ty h1{font-size:clamp(28px,4vw,40px);font-weight:800;margin-bottom:14px;}
+    .ty p{color:#9DB3AA;max-width:52ch;margin:0 auto 28px;font-size:17px;}
+    .links{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;}
+    .ghost{color:#EAF2EE;text-decoration:none;font-weight:700;border-bottom:1px solid #2FBF9B;padding-bottom:2px;}
+  </style>
+</Base>
