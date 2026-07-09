@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.localeCompare(a.data.date));
+const title = 'Blog: como vender para a Petrobras | Licitações e Petronect';
+const description = 'Guias práticos sobre licitações da Petrobras: cadastro CRCC, famílias, Petronect, prazos e erros que fazem empresas perderem oportunidades.';
+---
+<Base title={title} description={description} path="blog/">
+  <section class="head"><div class="wrap">
+    <div class="eyebrow">Blog</div>
+    <h1>Como vender para a Petrobras — na prática</h1>
+    <p class="lede">Guias diretos para empresas que querem fornecer à Petrobras: cadastro, CRCC, famílias e como não perder prazo.</p>
+  </div></section>
+  <section class="wrap list">
+    {posts.map(p => (
+      <a class="card" href={'/blog/' + p.id + '/'}>
+        <div class="date">{new Date(p.data.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
+        <h2>{p.data.title}</h2>
+        <p>{p.data.description}</p>
+        <span class="more">Ler artigo →</span>
+      </a>
+    ))}
+  </section>
+  <style>
+    .head{background:radial-gradient(120% 90% at 12% 8%,#0F2A23 0%,#0B1F1A 62%);color:#EAF2EE;padding:56px 0 46px;}
+    .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#12A183;font-weight:700;}
+    .head h1{font-size:clamp(28px,4.6vw,44px);font-weight:800;margin:14px 0 12px;}
+    .head .lede{color:#9DB3AA;max-width:60ch;font-size:16px;}
+    .list{padding:40px 24px 10px;display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+    .card{background:#fff;border:1px solid #E4DECF;border-radius:14px;padding:24px;text-decoration:none;color:#14231D;display:block;transition:border-color .15s;}
+    .card:hover{border-color:#12A183;}
+    .date{font-size:12px;color:#8A9086;text-transform:uppercase;letter-spacing:.04em;}
+    .card h2{font-size:20px;font-weight:800;margin:8px 0 8px;}
+    .card p{font-size:14.5px;color:#5E6F67;margin-bottom:12px;}
+    .more{color:#12A183;font-weight:700;font-size:14px;}
+    @media(max-width:720px){.list{grid-template-columns:1fr;}}
+  </style>
+</Base>
