@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import { getOportunidades } from '../lib/petronect.js';
+const { total, fecha, cont, ok } = await getOportunidades();
+const nTotal = ok ? total : 292;
+const nFecha = ok ? fecha : 60;
+const nSet = cont.length || 13;
+const title = 'Como vender para a Petrobras | Consultoria em licitações (Petronect)';
+const description = 'Sua empresa pode fornecer para a Petrobras. Ajudamos com cadastro CRCC, escolha da família certa e monitoramento diário das licitações abertas no Petronect.';
+---
+<Base title={title} description={description} path="">
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Consultoria em licitações Petrobras</div>
+      <h1>Sua empresa pode <em>vender para a Petrobras</em>. Só precisa entrar do jeito certo.</h1>
+      <p class="lede">A Petrobras compra bens e serviços todo dia — de válvulas a software — de empresas que a maioria acha que "não têm porte". O que falta não é capacidade: é cadastro na família certa e informação na hora certa.</p>
+      <div class="kpis">
+        <div class="kpi"><div class="n">{nTotal}</div><div class="l">licitações abertas agora</div></div>
+        <div class="kpi"><div class="n amber">{nFecha}</div><div class="l">fecham em ≤ 3 dias</div></div>
+        <div class="kpi"><div class="n">{nSet}</div><div class="l">setores com demanda</div></div>
+      </div>
+      <div class="herocta">
+        <a href="#contato" class="btn">Quero um diagnóstico gratuito →</a>
+        <a href="/oportunidades/" class="ghost">Ver oportunidades abertas</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap steps">
+    <h2>Como eu ajudo você a vender para a Petrobras</h2>
+    <div class="stepgrid">
+      <div class="stp"><div class="b">1</div><h3>Diagnóstico</h3><p>Descubro em quais <b>famílias Petrobras</b> sua empresa se encaixa. Cadastrar na categoria errada = nunca ser chamado para os editais certos.</p></div>
+      <div class="stp"><div class="b">2</div><h3>Habilitação (CRCC)</h3><p>Conduzo o <b>Certificado de Registro Cadastral</b> e a documentação técnica, jurídica e financeira. É a porta que a maioria não sabe abrir.</p></div>
+      <div class="stp"><div class="b">3</div><h3>Monitoramento</h3><p>Acompanho as oportunidades abertas <b>todos os dias</b> e aviso o que é do seu setor, com prazo. Você foca na proposta, não na garimpagem.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap why">
+    <div class="whygrid">
+      <div>
+        <h2>Por que a maioria fica de fora</h2>
+        <ul>
+          <li>❌ Não sabe que a oportunidade existe — descobre com o prazo fechando</li>
+          <li>❌ Está cadastrada na família errada (ou nem cadastrada)</li>
+          <li>❌ Acha que "é só para gigante" e nem tenta</li>
+        </ul>
+      </div>
+      <div>
+        <h2>O que muda com um processo</h2>
+        <ul>
+          <li>✅ Um funil previsível de oportunidades do seu setor</li>
+          <li>✅ Cadastro correto que te habilita aos editais certos</li>
+          <li>✅ Alguém acompanhando prazos por você, todo dia</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="contato" class="contato">
+    <div class="wrap contatogrid">
+      <div>
+        <h2>Diagnóstico gratuito</h2>
+        <p>Preencha e eu te digo se sua empresa tem potencial para fornecer à Petrobras e por onde começar. Sem compromisso.</p>
+        <div class="trust">Resposta rápida · dados só para contato · sem spam</div>
+      </div>
+      <form name="diagnostico" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/obrigado/" class="leadform">
+        <input type="hidden" name="form-name" value="diagnostico" />
+        <p class="hp"><label>Deixe em branco: <input name="bot-field" /></label></p>
+        <input name="nome" required placeholder="Seu nome" />
+        <input name="empresa" required placeholder="Nome da empresa" />
+        <input name="email" type="email" required placeholder="Seu melhor e-mail" />
+        <input name="whatsapp" placeholder="WhatsApp (opcional)" />
+        <textarea name="fornecimento" rows="3" placeholder="O que sua empresa fornece? (produtos/serviços)"></textarea>
+        <button class="btn" type="submit">Quero meu diagnóstico grátis</button>
+      </form>
+    </div>
+  </section>
+
+  <style>
+    .hero{background:radial-gradient(120% 90% at 12% 8%,#0F2A23 0%,#0B1F1A 62%);color:#EAF2EE;padding:72px 0 64px;}
+    .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#12A183;font-weight:700;display:flex;align-items:center;gap:10px;}
+    .eyebrow::before{content:"";width:26px;height:2px;background:#C4881A;}
+    .hero h1{font-size:clamp(34px,6vw,58px);line-height:1.03;font-weight:800;margin:18px 0 16px;}
+    .hero h1 em{font-style:normal;color:#2FBF9B;}
+    .lede{font-size:clamp(16px,2vw,19px);color:#9DB3AA;max-width:62ch;}
+    .kpis{display:flex;gap:14px;flex-wrap:wrap;margin:32px 0 28px;}
+    .kpi{background:#0F2A23;border:1px solid #1E3B32;border-radius:14px;padding:16px 22px;min-width:148px;}
+    .kpi .n{font-size:36px;font-weight:800;color:#fff;}
+    .kpi .n.amber{color:#E8B33E;}
+    .kpi .l{font-size:12.5px;color:#9DB3AA;margin-top:2px;}
+    .herocta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+    .ghost{color:#EAF2EE;text-decoration:none;font-weight:700;font-size:15px;border-bottom:1px solid #2FBF9B;padding-bottom:2px;}
+    .steps{padding:56px 24px 10px;}
+    h2{font-size:clamp(22px,3vw,31px);font-weight:800;margin-bottom:22px;}
+    .stepgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .stp{background:#fff;border:1px solid #E4DECF;border-radius:14px;padding:24px;}
+    .stp .b{width:38px;height:38px;border-radius:10px;background:#0B5E4F;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;margin-bottom:14px;}
+    .stp h3{font-size:18px;margin-bottom:8px;}
+    .stp p{font-size:14px;color:#5E6F67;}
+    .why{padding:46px 24px;}
+    .whygrid{display:grid;grid-template-columns:1fr 1fr;gap:30px;}
+    .why ul{list-style:none;display:flex;flex-direction:column;gap:12px;}
+    .why li{font-size:15.5px;color:#3A4842;}
+    .contato{background:#0B5E4F;color:#EAF2EE;margin-top:50px;padding:56px 0;}
+    .contatogrid{display:grid;grid-template-columns:1fr 1.1fr;gap:36px;align-items:center;}
+    .contato h2{color:#fff;}
+    .contato p{color:#CFE8DF;font-size:16px;max-width:44ch;}
+    .trust{margin-top:16px;font-size:12.5px;color:#8FD8C7;}
+    .leadform{background:#fff;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px;}
+    .leadform input,.leadform textarea{border:1px solid #DDD7C9;border-radius:10px;padding:13px 14px;font-size:15px;font-family:inherit;color:#14231D;width:100%;}
+    .leadform input:focus,.leadform textarea:focus{outline:2px solid #12A183;border-color:#12A183;}
+    .leadform .btn{justify-content:center;margin-top:4px;}
+    .hp{display:none;}
+    @media(max-width:720px){.stepgrid,.whygrid,.contatogrid{grid-template-columns:1fr;}}
+  </style>
+</Base>
