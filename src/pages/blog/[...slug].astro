@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<Base title={post.data.title + ' | Licitações Petrobras'} description={post.data.description} type="article" path={'blog/' + post.id + '/'}>
+  <article class="wrap post">
+    <a href="/blog/" class="back">← Blog</a>
+    <div class="date">{new Date(post.data.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
+    <h1>{post.data.title}</h1>
+    <div class="body"><Content /></div>
+    <div class="cta-box">
+      <h3>Quer ajuda para vender para a Petrobras?</h3>
+      <p>Faço o diagnóstico da sua empresa e mostro por onde começar — sem compromisso.</p>
+      <a href="/#contato" class="btn">Quero um diagnóstico grátis →</a>
+    </div>
+  </article>
+  <style>
+    .post{max-width:760px;padding:44px 24px 20px;}
+    .back{color:#12A183;text-decoration:none;font-weight:700;font-size:14px;}
+    .date{font-size:12px;color:#8A9086;text-transform:uppercase;letter-spacing:.04em;margin-top:18px;}
+    .post h1{font-size:clamp(28px,4.6vw,42px);font-weight:800;margin:8px 0 24px;line-height:1.08;}
+    .body{font-size:17px;color:#2A3A33;line-height:1.7;}
+    .body :global(h2){font-size:25px;font-weight:800;margin:34px 0 12px;color:#14231D;}
+    .body :global(h3){font-size:20px;font-weight:700;margin:24px 0 10px;}
+    .body :global(p){margin-bottom:16px;}
+    .body :global(ul),.body :global(ol){margin:0 0 16px 22px;}
+    .body :global(li){margin-bottom:8px;}
+    .body :global(strong){color:#0B5E4F;}
+    .body :global(a){color:#12A183;}
+    .cta-box{background:#0B5E4F;color:#EAF2EE;border-radius:16px;padding:30px;margin:44px 0 10px;text-align:center;}
+    .cta-box h3{color:#fff;font-size:22px;font-weight:800;margin-bottom:8px;}
+    .cta-box p{color:#CFE8DF;margin-bottom:18px;}
+  </style>
+</Base>
