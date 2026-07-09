@@ -1,0 +1,106 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  path?: string;
+}
+const { title, description, type = 'website', path = '' } = Astro.props;
+const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const canonical = site + '/' + path.replace(/^\//, '');
+const marca = '@consultxlicitacoes';
+const email = 'vivleroa@gmail.com';
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Consultoria em Licitações Petrobras',
+  description: 'Ajudamos empresas a se cadastrar e vender para a Petrobras via Petronect.',
+  areaServed: 'BR',
+  url: site,
+  email: email,
+  sameAs: ['https://instagram.com/consultxlicitacoes'],
+};
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="robots" content="index, follow" />
+  <!-- Open Graph -->
+  <meta property="og:type" content={type} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:site_name" content="Consultoria Licitações Petrobras" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🛢️</text></svg>" />
+  <script type="application/ld+json" set:html={JSON.stringify(org)} />
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap navrow">
+      <a href="/" class="brand">Licitações <span>Petrobras</span></a>
+      <nav>
+        <a href="/oportunidades/">Oportunidades</a>
+        <a href="/blog/">Blog</a>
+        <a href="/#contato" class="navcta">Diagnóstico grátis</a>
+      </nav>
+    </div>
+  </header>
+  <main><slot /></main>
+  <footer class="ft">
+    <div class="wrap">
+      <div class="ftgrid">
+        <div>
+          <div class="brand">Licitações <span>Petrobras</span></div>
+          <p>Consultoria para empresas que querem vender para a Petrobras: cadastro, CRCC e monitoramento de oportunidades.</p>
+        </div>
+        <div>
+          <b>Links</b>
+          <a href="/oportunidades/">Oportunidades abertas</a>
+          <a href="/blog/">Blog</a>
+          <a href={'mailto:' + email}>Fale comigo</a>
+        </div>
+      </div>
+      <div class="ftbase">{marca} · Conteúdo informativo — as oportunidades são públicas; para participar é preciso Taxa de Acesso + CRCC.</div>
+    </div>
+  </footer>
+  <style is:global>
+    :root{--bg:#0B1F1A;--card:#0F2A23;--ink:#14231D;--ink-d:#EAF2EE;--soft:#5E6F67;--soft-d:#9DB3AA;--line:#E4DECF;--line-d:#1E3B32;--green:#0B5E4F;--green-b:#12A183;--amber:#C4881A;--paper:#F4F1EA;--crit:#B23A22;--warn:#9C6C12;--ok:#2E8B6F;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+    a{color:inherit;}
+    .mono{font-family:ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums;}
+    .nav{background:var(--bg);color:var(--ink-d);position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line-d);}
+    .navrow{display:flex;align-items:center;justify-content:space-between;height:64px;}
+    .brand{font-weight:800;font-size:18px;text-decoration:none;color:#fff;letter-spacing:-.01em;}
+    .brand span{color:var(--green-b);}
+    .nav nav{display:flex;gap:22px;align-items:center;}
+    .nav nav a{color:var(--soft-d);text-decoration:none;font-size:14px;font-weight:600;}
+    .nav nav a:hover{color:#fff;}
+    .navcta{background:var(--green-b);color:#04120E!important;padding:9px 15px;border-radius:9px;}
+    @media(max-width:640px){.nav nav a:not(.navcta){display:none;}}
+    .ft{background:var(--bg);color:var(--soft-d);margin-top:60px;padding:44px 0 30px;}
+    .ftgrid{display:grid;grid-template-columns:2fr 1fr;gap:30px;}
+    .ft .brand{display:block;margin-bottom:10px;}
+    .ft p{font-size:13.5px;max-width:46ch;}
+    .ft b{color:#fff;display:block;margin-bottom:10px;font-size:14px;}
+    .ft a{display:block;color:var(--soft-d);text-decoration:none;font-size:13.5px;margin-bottom:6px;}
+    .ftbase{border-top:1px solid var(--line-d);margin-top:26px;padding-top:18px;font-size:12px;}
+    @media(max-width:640px){.ftgrid{grid-template-columns:1fr;}}
+    .btn{display:inline-flex;align-items:center;gap:9px;background:var(--green-b);color:#04120E;font-weight:800;text-decoration:none;padding:15px 26px;border-radius:12px;font-size:16px;border:0;cursor:pointer;}
+    .btn:hover{background:#0FB08D;}
+    h1,h2,h3{letter-spacing:-.02em;text-wrap:balance;}
+  </style>
+</body>
+</html>
